@@ -1,0 +1,5 @@
+venv/
+
+git rm -r --cached venv
+git commit -m "Stop tracking venv"
+git push
