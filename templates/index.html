@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MoniTri - Expense Tracker</title>
+    <!-- Bootstrap CSS CDN for quick styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <a href="{{ url_for('analytics') }}" class="btn btn-info mb-4">View Analytics</a>
+
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">MoniTri - Expense Tracker</h1>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Add Expense Form -->
+        <div class="card mb-4">
+            <div class="card-header">Add New Expense</div>
+            <div class="card-body">
+                <form action="{{ url_for('add_expense') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category *</label>
+                        <input type="text" class="form-control" id="category" name="category"
+                            placeholder="e.g., Food, Transport" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount *</label>
+                        <input type="number" step="0.01" class="form-control" id="amount" name="amount"
+                            placeholder="e.g., 25.50" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (optional)</label>
+                        <input type="text" class="form-control" id="description" name="description"
+                            placeholder="e.g., Lunch at cafe" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Expense</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Expenses Table -->
+        <h3>Your Expenses (Total: ${{ '{:.2f}'.format(total) }})</h3>
+        {% if expenses %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th class="text-end">Amount ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ expense.category }}</td>
+                    <td>{{ expense.description or '-' }}</td>
+                    <td class="text-end">{{ '{:.2f}'.format(expense.amount) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No expenses added yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
